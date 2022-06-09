@@ -1,6 +1,7 @@
 using Printf
 using BenchmarkTools
 using LegacyStrings
+using Statistics
 
 punctuation_characters = r"[~\`!@#\$%^&*()_\-\+\\|;:',<.>\/?1234567890]"
 #punctuation_characters = String("~\`!@#\$%^&*()_\-\+\\|;:',<.>\/?1234567890")
@@ -22,8 +23,6 @@ function countwords(filename::String)
     end
     close(openedfile)
     filter!(!isempty, wordlist)
-    println(wordlist)
-    println("Number of unique words: ", length(wordlist))
 end
 
 
@@ -37,10 +36,9 @@ if n < 1
 end
 
 filename = ARGS[1]
-b = @benchmark countwords(filename) samples = 3 evals = 1
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
+b = @benchmark countwords(filename) samples = 3 evals = 1 seconds = 10000
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
 println(" ")

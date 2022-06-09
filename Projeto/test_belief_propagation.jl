@@ -2,6 +2,7 @@ using BenchmarkTools
 using Printf
 using Random
 using LinearAlgebra
+using Statistics
 
 # Get the number of iterations from the command line.
 n, = size(ARGS)
@@ -33,12 +34,10 @@ println("--------------------------")
 println(@sprintf "Belief calculations: %d" N)
 println("--------------------------")
 
-b = @benchmark beliefpropagation(N) samples = 3 evals = 1
+b = @benchmark beliefpropagation(N) samples = 3 evals = 1 seconds = 10000
 
-dump(b)
 println(mean(b.times))
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")

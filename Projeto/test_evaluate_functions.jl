@@ -1,5 +1,6 @@
 using BenchmarkTools
 using Printf
+using Statistics
 
 
 """
@@ -30,11 +31,10 @@ println("Evaluate functions: ", N)
 println("-----------------------------------------")
 println(" ")
 
-b = @benchmark evaluatefunctions(N) samples = 3 evals = 1
+b = @benchmark evaluatefunctions(N) samples = 3 evals = 1 seconds = 10000
 
-
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")

@@ -44,10 +44,8 @@ end
 
 b = @benchmark find_munchausen_numbers() samples = 3 evals = 1 seconds = 10000
 
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
-
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
 println(" ")

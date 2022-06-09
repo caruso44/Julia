@@ -1,4 +1,4 @@
-
+using  Statistics
 using BenchmarkTools
 using Printf
 using LinearAlgebra
@@ -193,7 +193,5 @@ result = @elapsed begin
 end
 benchmarks = (benchmarks..., :c_time_step => (result, iteration))
 for (name, (t, sweeps)) in benchmarks
-    println(name, ":")
-    println("          Number of sweeps: ", sweeps)
-    println("              Elapsed Time: $(t) Seconds")
+    println(mean(t.times))
 end

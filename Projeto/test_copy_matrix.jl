@@ -1,4 +1,4 @@
-
+using Statistics
 using BenchmarkTools
 using Printf
 
@@ -33,14 +33,12 @@ println("-------------------------------")
 
 A = randn(dimension, dimension, 3)
 
-b = @benchmark matrixcopy(A) samples = 3 evals = 1
+b = @benchmark matrixcopy(A) samples = 3 evals = 1 seconds = 10000
 
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
-
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
 println(" ")
 
 println("--------------------------")
@@ -53,11 +51,5 @@ b = @benchmark begin
     A[:, :, 1] = A[:, :, 2]
     A[:, :, 3] = A[:, :, 1]
     A[:, :, 2] = A[:, :, 3]
-end samples = 3 evals = 1
+end samples = 3 evals = 1 seconds = 10000
 
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
-println(" ")
