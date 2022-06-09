@@ -2,7 +2,8 @@ using BenchmarkTools
 using Printf
 using FFTW
 using Statistics
-
+using DataFrames
+using CSV
 
 # Get the number of data points N from the command line.
 N = parse(Int, ARGS[1])
@@ -19,9 +20,17 @@ b = @benchmark  begin
     result = abs.(result)
 end samples = 3 evals = 1 seconds = 10000
 
+A = []
+B = []
+C = []
+D = []
+E = []
 
-println(mean(b.times))
-println(minimum(b.times))
-println(maximum(b.times))
-println(std(b.times))
-println(" ")
+push!(A,"compute_FFT_" * string(N))
+push!(B,mean(b.times)/1e9);
+push!(C,minimum(b.times)/1e9);
+push!(D,maximum(b.times)/1e9);
+push!(E,std(b.times)/1e9);
+
+df = DataFrame(function_name = A, avg_time = B, min_time = C, max_time = D, std_dev = E)
+CSV.write("results-host-julia.csv", df, delim = ',', append = true)
