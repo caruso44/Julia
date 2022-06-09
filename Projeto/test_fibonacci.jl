@@ -1,6 +1,7 @@
 using Printf
 using BenchmarkTools
 using  Statistics
+using  DataFrames
 
 # Get the number of iterations from the command line.
 
@@ -57,9 +58,7 @@ println("--------------------------")
 
 b = @benchmark recursive_fibonacci(N) samples = 3 evals = 1 seconds = 10000
  
-println(mean(b.times))
-println(minimum(b.times))
-println(maximum(b.times))
-println(std(b.times))
-println(" ")
+df  = DataFrame[("recursive fibonacci", mean(b.times), minimum(b.times), maximum(b.times), std(b.times))]
+
+
 
