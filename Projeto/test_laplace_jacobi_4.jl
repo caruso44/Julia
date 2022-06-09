@@ -1,4 +1,9 @@
-using  Statistics
+
+#=
+Sections of the code below were proposed by Simon Danisch:
+    https://gist.github.com/SimonDanisch/ae046f3a0c78b26242e78fa9b139aa11#file-benchmark-jl
+=#
+
 using BenchmarkTools
 using Printf
 using LinearAlgebra
@@ -193,5 +198,7 @@ result = @elapsed begin
 end
 benchmarks = (benchmarks..., :c_time_step => (result, iteration))
 for (name, (t, sweeps)) in benchmarks
-    println(mean(t.times))
+    println(name, ":")
+    println("          Number of sweeps: ", sweeps)
+    println("              Elapsed Time: $(t) Seconds")
 end
