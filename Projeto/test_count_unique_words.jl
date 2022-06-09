@@ -23,6 +23,7 @@ function countwords(filename::String)
     end
     close(openedfile)
     filter!(!isempty, wordlist)
+    println("Number of unique words: ", length(wordlist))
 end
 
 
