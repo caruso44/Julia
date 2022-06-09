@@ -1,4 +1,3 @@
-
 #=
 Sections of the code below were proposed by Simon Danisch:
     https://gist.github.com/SimonDanisch/ae046f3a0c78b26242e78fa9b139aa11#file-benchmark-jl
@@ -7,7 +6,7 @@ Sections of the code below were proposed by Simon Danisch:
 using BenchmarkTools
 using Printf
 using LinearAlgebra
-
+using Statistics
 """
     regular_time_step(u::Matrix)
 Take a time step in the Jacobi numerical approximation u using un-optimized loops.
@@ -186,19 +185,12 @@ benchmarks = map(functions) do time_step
     solver(v, time_step) # compile
     v = initialize_array()
     # should be enough iterations already to be okay with just a simple elapsed
-    result = @elapsed begin
+    result = @benchmark begin
         u, error, iteration = solver(v, time_step)
     end
     Symbol(time_step) => (result, iteration)
 end
 
-result = @elapsed begin
-    v = initialize_c()
-    u, error, iteration = solver(v, c_time_step)
-end
-benchmarks = (benchmarks..., :c_time_step => (result, iteration))
-for (name, (t, sweeps)) in benchmarks
-    println(name, ":")
-    println("          Number of sweeps: ", sweeps)
-    println("              Elapsed Time: $(t) Seconds")
-end
+
+
+println(mean(result.times))
