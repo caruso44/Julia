@@ -1,6 +1,7 @@
 using BenchmarkTools
 using Printf
 using LinearAlgebra
+using Statistics
 
 # Get the number of iterations from the command line
 n, = size(ARGS)
@@ -32,15 +33,13 @@ println("--------------------------")
 b = @benchmark begin
    x, w = gauss(-3, 3, $N)
    quad = sum(exp.(x) .* w)
-end samples = 3 evals = 1
+end samples = 3 evals = 1 seconds = 10000
 
-
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
-
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")
 
 #exact = exp(3) - exp(-3)
 #println(quad)

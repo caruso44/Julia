@@ -5,6 +5,7 @@
 using BenchmarkTools
 using Printf
 using Primes
+using Statistics
 
 # Get the value of of an integer from the command line.
 n, = size(ARGS)
@@ -35,12 +36,12 @@ perniciouses(a::Integer, b::Integer) = filter(ispernicious, a:b)
 
 println("Pernicious number of order: ", max_num)
 
-b = @benchmark perniciouses(max_num) samples = 3 evals = 1
+b = @benchmark perniciouses(max_num) samples = 3 evals = 1 seconds = 10000
 
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")
 
 #println("Pernicious number of order ", max_num, ": ", perniciouses(max_num))

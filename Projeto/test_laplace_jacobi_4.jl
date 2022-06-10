@@ -1,4 +1,9 @@
 
+#=
+Sections of the code below were proposed by Simon Danisch:
+    https://gist.github.com/SimonDanisch/ae046f3a0c78b26242e78fa9b139aa11#file-benchmark-jl
+=#
+
 using BenchmarkTools
 using Printf
 using LinearAlgebra

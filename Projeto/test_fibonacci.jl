@@ -41,13 +41,13 @@ println("--------------------------")
 println(@sprintf "Iterative - Fibonnaci %d" N)
 println("--------------------------")
 
-b = @benchmark iterative_fibonacci(N) samples = 10 evals = 10
+b = @benchmark iterative_fibonacci(N) samples = 3 evals = 1 seconds = 10000
 
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")
 
 
 println("")
@@ -55,11 +55,11 @@ println("--------------------------")
 println(@sprintf "Recursive - Fibonnaci %d" N)
 println("--------------------------")
 
-b = @benchmark recursive_fibonacci(N) samples = 3 evals = 1
-
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
+b = @benchmark recursive_fibonacci(N) samples = 3 evals = 1 seconds = 10000
+ 
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")
 

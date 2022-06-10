@@ -1,6 +1,7 @@
 using BenchmarkTools
 using Printf
 using Random
+using Statistics
 
 # Get the number of iterations from the command line
 n, = size(ARGS)
@@ -41,12 +42,10 @@ println("--------------------------")
 println(@sprintf "Markov Chain calculations: %d" N)
 println("--------------------------")
 
-b = @benchmark markov(0.0, 0.0, N) samples = 3 evals = 1
+b = @benchmark markov(0.0, 0.0, N) samples = 3 evals = 1 seconds = 10000
 
-io = IOBuffer()
-show(io, "text/plain", b)
-s = String(take!(io))
-
-println(s)
-
-
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")
