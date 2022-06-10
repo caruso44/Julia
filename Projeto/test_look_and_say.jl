@@ -1,6 +1,8 @@
 using BenchmarkTools
 using Printf
 using Statistics
+using DataFrames
+using CSV
 
 
 """
@@ -49,3 +51,18 @@ println(maximum(b.times))
 println(std(b.times))
 println(" ")
 #   println(r)
+
+A = []
+B = []
+C = []
+D = []
+E = []
+
+push!(A,"look_and_say_" * string(N))
+push!(B,mean(b.times)/1e9);
+push!(C,minimum(b.times)/1e9);
+push!(D,maximum(b.times)/1e9);
+push!(E,std(b.times)/1e9);
+
+df = DataFrame(function_name = A, avg_time = B, min_time = C, max_time = D, std_dev = E)
+CSV.write("results-host-julia.csv", df, delim = ',', append = true)

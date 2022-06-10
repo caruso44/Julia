@@ -49,12 +49,12 @@ julia test_copy_matrix.jl 50
 julia test_copy_matrix.jl 70
 julia test_copy_matrix.jl 90
 
-#echo '-------------------------'
-#echo 'Look and say'
-#echo '-------------------------'
-#julia test_look_and_say_2.jl 40
-#julia test_look_and_say_2.jl 45
-#julia test_look_and_say_2.jl 48
+echo '-------------------------'
+echo 'Look and say'
+echo '-------------------------'
+julia test_look_and_say_2.jl 40
+julia test_look_and_say_2.jl 45
+julia test_look_and_say_2.jl 48
 
 echo '-------------------------'
 echo ‘Count Unique Words in File
@@ -96,8 +96,8 @@ echo '-------------------------'
 echo 'Compute FFT'
 echo '-------------------------'
 julia test_compute_FFT.jl 100
-julia test_compute_FFT.jl 150
-julia test_compute_FFT.jl 200
+julia test_compute_FFT.jl 300
+julia test_compute_FFT.jl 500
 
 echo '-------------------------'
 echo 'Jacobi Iterative solver'
