@@ -52,9 +52,9 @@ julia test_copy_matrix.jl 90
 echo '-------------------------'
 echo 'Look and say'
 echo '-------------------------'
-julia test_look_and_say_2.jl 40
-julia test_look_and_say_2.jl 45
-julia test_look_and_say_2.jl 48
+julia test_look_and_say.jl 40
+julia test_look_and_say.jl 45
+julia test_look_and_say.jl 48
 
 echo '-------------------------'
 echo ‘Count Unique Words in File
