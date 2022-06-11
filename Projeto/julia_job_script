@@ -41,7 +41,7 @@ module load julia/1.6.2
 #setenv PATH /usr/local/other/julia/1.6.2/bin:$PATH
 #setenv LD_LIBRARY_PATH /usr/local/other/julia/1.6.2/lib:$LD_LIBRARY_PATH
 setenv JULIA_DEPOT_PATH /discover/nobackup/jkouatch/JULIA_PKGDIR/SLES12/02Aug2021
-
+start=$(date +%s%N)
 echo '-------------------------'
 echo 'Copy Matrix'
 echo '-------------------------'
@@ -52,9 +52,9 @@ julia test_copy_matrix.jl 90
 echo '-------------------------'
 echo 'Look and say'
 echo '-------------------------'
-julia test_look_and_say.jl 40
-julia test_look_and_say.jl 45
-julia test_look_and_say.jl 48
+julia test_look_and_say.jl 10
+julia test_look_and_say.jl 15
+julia test_look_and_say.jl 18
 
 echo '-------------------------'
 echo ‘Count Unique Words in File
@@ -146,3 +146,7 @@ julia test_pernicious_numbers.jl 100
 #time julia -p 16 test_time_series_AOA_multiprocessing.jl
 #time julia -p 24 test_time_series_AOA_multiprocessing.jl
 #time julia -p 28 test_time_series_AOA_multiprocessing.jl
+
+end=$(date +%s%N)
+echo "Elapsed Time $(($(($end-$start))/1000000)) ms"
+julia writeTime.jl "${start}" "${end}"
