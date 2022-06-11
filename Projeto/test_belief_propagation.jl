@@ -36,7 +36,7 @@ println("--------------------------")
 println(@sprintf "Belief calculations: %d" N)
 println("--------------------------")
 
-b = @benchmark beliefpropagation(N) samples = 3 evals = 1 seconds = 10000
+b = @benchmark beliefpropagation(N) samples = 3 evals = 1 seconds = 100000
 
 A = []
 B = []

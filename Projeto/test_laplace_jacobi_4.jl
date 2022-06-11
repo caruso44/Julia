@@ -65,7 +65,7 @@ println(@sprintf "Regular - Jacobi %d" N)
 println("--------------------------")
  
 u = ones
-b = @benchmark regular_time_step(y) samples = 3 evals = 1 seconds = 10000
+b = @benchmark regular_time_step(y) samples = 3 evals = 1 seconds = 100000
  
 X = []
 B = []
@@ -85,7 +85,7 @@ println("--------------------------")
 println(@sprintf "Optimized - Jacobi %d" N)
 println("--------------------------")
  
-b = @benchmark optimized_time_step(y) samples = 3 evals = 1 seconds = 10000
+b = @benchmark optimized_time_step(y) samples = 3 evals = 1 seconds = 100000
 
 
 push!(X,"laplace_jacobi_optimized_" * string(N))

@@ -12,7 +12,7 @@ import numpy as np
 import datetime as dttime
 
 begYear = 1990 # starting year
-endYear = 2009 # ending year
+endYear = 1991 # ending year
 
 nlats = 181  # number of latitudes
 nlons = 360  # number of longitudes
