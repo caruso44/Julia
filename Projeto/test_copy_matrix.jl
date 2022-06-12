@@ -34,7 +34,7 @@ println("-------------------------------")
 
 A = randn(dimension, dimension, 3)
 
-b = @benchmark matrixcopy(A) samples = 3 evals = 1 seconds = 10000
+b = @benchmark matrixcopy(A) samples = 3 evals = 1 seconds = 100000
 
 println(mean(b.times))
 println(minimum(b.times))
@@ -66,7 +66,7 @@ b = @benchmark begin
     A[:, :, 1] = A[:, :, 2]
     A[:, :, 3] = A[:, :, 1]
     A[:, :, 2] = A[:, :, 3]
-end samples = 3 evals = 1 seconds = 10000
+end samples = 3 evals = 1 seconds = 100000
 
 
 push!(X,"vector_copy_" * string(dimension))

@@ -43,7 +43,7 @@ println("--------------------------")
 println(@sprintf "Iterative - Fibonnaci %d" N)
 println("--------------------------")
 
-b = @benchmark iterative_fibonacci(N) samples = 3 evals = 1 seconds = 10000
+b = @benchmark iterative_fibonacci(N) samples = 3 evals = 1 seconds = 100000
 
 A = []
 B = []
@@ -66,7 +66,7 @@ println("--------------------------")
 println(@sprintf "Recursive - Fibonnaci %d" N)
 println("--------------------------")
 
-b = @benchmark recursive_fibonacci(N) samples = 3 evals = 1 seconds = 10000
+b = @benchmark recursive_fibonacci(N) samples = 3 evals = 1 seconds = 100000
 
 push!(A,"recursive_fibonacci_" * string(N))
 push!(B,mean(b.times)/1e9);

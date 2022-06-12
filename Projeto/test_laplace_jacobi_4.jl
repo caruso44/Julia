@@ -8,7 +8,7 @@ using CSV
  
 n, = size(ARGS)
 if n < 1
-    println("Usage: fibonnaci.jl N")
+    println("Usage: laplace_jacobi.jl N")
     println("       ---> Please specify the number of iterations.")
     exit()
 end
@@ -65,7 +65,7 @@ println(@sprintf "Regular - Jacobi %d" N)
 println("--------------------------")
  
 u = ones
-b = @benchmark regular_time_step(y) samples = 3 evals = 1 seconds = 10000
+b = @benchmark regular_time_step(y) samples = 3 evals = 1 seconds = 100000
  
 X = []
 B = []
@@ -73,7 +73,7 @@ C = []
 D = []
 E = []
 
-push!(X,"Laplace_Jacobi_" * string(N))
+push!(X,"laplace_jacobi_regular_" * string(N))
 push!(B,mean(b.times)/1e9);
 push!(C,minimum(b.times)/1e9);
 push!(D,maximum(b.times)/1e9);
@@ -85,10 +85,10 @@ println("--------------------------")
 println(@sprintf "Optimized - Jacobi %d" N)
 println("--------------------------")
  
-b = @benchmark optimized_time_step(y) samples = 3 evals = 1 seconds = 10000
+b = @benchmark optimized_time_step(y) samples = 3 evals = 1 seconds = 100000
 
 
-push!(X,"Laplace_Jacobi_" * string(N))
+push!(X,"laplace_jacobi_optimized_" * string(N))
 push!(B,mean(b.times)/1e9);
 push!(C,minimum(b.times)/1e9);
 push!(D,maximum(b.times)/1e9);

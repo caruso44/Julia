@@ -38,7 +38,7 @@ perniciouses(a::Integer, b::Integer) = filter(ispernicious, a:b)
 
 println("Pernicious number of order: ", max_num)
 
-b = @benchmark perniciouses(max_num) samples = 3 evals = 1 seconds = 10000
+b = @benchmark perniciouses(max_num) samples = 3 evals = 1 seconds = 100000
 
 println(mean(b.times))
 println(minimum(b.times))

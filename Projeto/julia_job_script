@@ -137,7 +137,7 @@ echo 'Compute Pernicious Numbers'
 echo '-------------------------'
 julia test_pernicious_numbers.jl 100
 
-#julia test_time_series_AOA.jl
+julia test_time_series_AOA.jl
 
 #time julia -p 1 test_time_series_AOA_multiprocessing.jl
 #time julia -p 2 test_time_series_AOA_multiprocessing.jl
