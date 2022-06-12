@@ -39,7 +39,7 @@ if n < 1
 end
 
 filename = ARGS[1]
-b = @benchmark countwords(filename) samples = 3 evals = 1 seconds = 10000
+b = @benchmark countwords(filename) samples = 3 evals = 1 seconds = 100000
 println(mean(b.times))
 println(minimum(b.times))
 println(maximum(b.times))

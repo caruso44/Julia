@@ -42,7 +42,7 @@ println("--------------------------")
 
 b = @benchmark begin
     r = look_and_say_sequence("1223334444", N)
-end samples = 3 evals = 1 seconds = 10000
+end samples = 3 evals = 1 seconds = 100000
 
 
 println(mean(b.times))

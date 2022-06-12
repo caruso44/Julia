@@ -35,7 +35,7 @@ println("--------------------------")
 b = @benchmark begin
    x, w = gauss(-3, 3, $N)
    quad = sum(exp.(x) .* w)
-end samples = 3 evals = 1 seconds = 10000
+end samples = 3 evals = 1 seconds = 100000
 
 println(mean(b.times))
 println(minimum(b.times))

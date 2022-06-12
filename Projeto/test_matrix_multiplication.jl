@@ -26,7 +26,7 @@ println(" ")
 A = randn(N, N)
 B = randn(N, N)
 
-b = @benchmark C = A*B samples = 3 evals = 1 seconds = 10000
+b = @benchmark C = A*B samples = 3 evals = 1 seconds = 100000
 
 println(mean(b.times))
 println(minimum(b.times))

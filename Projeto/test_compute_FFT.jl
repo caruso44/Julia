@@ -18,7 +18,7 @@ b = @benchmark  begin
     mat = complex.(rand(N, N), randn(N, N))
     result = fft(mat)
     result = abs.(result)
-end samples = 3 evals = 1 seconds = 10000
+end samples = 3 evals = 1 seconds = 100000
 
 A = []
 B = []

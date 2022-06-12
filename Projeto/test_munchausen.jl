@@ -1,6 +1,6 @@
 using Printf
 using BenchmarkTools
-using  Statistics
+using Statistics
 using DataFrames
 using CSV
 
@@ -44,7 +44,7 @@ function find_munchausen_numbers()
 end 
 
 
-b = @benchmark find_munchausen_numbers() samples = 3 evals = 1 seconds = 10000
+b = @benchmark find_munchausen_numbers() samples = 3 evals = 1 seconds = 100000
 
 println(mean(b.times))
 println(minimum(b.times))

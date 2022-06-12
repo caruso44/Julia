@@ -44,7 +44,7 @@ println("--------------------------")
 println(@sprintf "Markov Chain calculations: %d" N)
 println("--------------------------")
 
-b = @benchmark markov(0.0, 0.0, N) samples = 3 evals = 1 seconds = 10000
+b = @benchmark markov(0.0, 0.0, N) samples = 3 evals = 1 seconds = 100000
 
 println(mean(b.times))
 println(minimum(b.times))
