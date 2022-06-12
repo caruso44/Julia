@@ -18,159 +18,6 @@ umask 022
 
 #limit stacksize unlimited
 
-source /usr/share/modules/init/csh
-module purge
-
-###############
-# 2018 Settings
-###############
-#module load other/comp/gcc-7.3
-#module load other/SSSO_Ana-PyD/SApd_5.0.1_py2.7_gcc-7.3
-#module load other/julia/0.6.2_gcc7.3
-#setenv JULIA_PKGDIR /discover/nobackup/jkouatch/JULIA_PKGDIR/19Feb2018
-
-## SLES12
-#module load comp/gcc/9.3.0
-#setenv PATH /usr/local/other/julia/1.2/bin:$PATH
-#setenv LD_LIBRARY_PATH /usr/local/other/julia/1.2/lib:$LD_LIBRARY_PATH
-#setenv JULIA_DEPOT_PATH /gpfsm/dnb32/jkouatch/JULIA_PKGDIR/SLES12/30April2020
-
-# SLES12
-module load comp/gcc/11.1.0
-module load julia/1.6.2
-#setenv PATH /usr/local/other/julia/1.6.2/bin:$PATH
-#setenv LD_LIBRARY_PATH /usr/local/other/julia/1.6.2/lib:$LD_LIBRARY_PATH
-setenv JULIA_DEPOT_PATH /discover/nobackup/jkouatch/JULIA_PKGDIR/SLES12/02Aug2021
-start=$(date +%s%N)
-echo '-------------------------'
-echo 'Copy Matrix'
-echo '-------------------------'
-julia test_copy_matrix.jl 50
-julia test_copy_matrix.jl 70
-julia test_copy_matrix.jl 90
-
-echo '-------------------------'
-echo 'Look and say'
-echo '-------------------------'
-julia test_look_and_say.jl 10
-julia test_look_and_say.jl 15
-julia test_look_and_say.jl 18
-
-echo '-------------------------'
-echo ‘Count Unique Words in File
-echo '-------------------------'
-julia test_count_unique_words.jl ../Data/bible.txt
-julia test_count_unique_words.jl ../Data/book1.txt
-julia test_count_unique_words.jl ../Data/plrabn12.txt
-julia test_count_unique_words.jl ../Data/world192.txt
-
-echo '-------------------------'
-echo 'Fibonacci Sequence'
-echo '-------------------------'
-julia test_fibonacci.jl 25
-julia test_fibonacci.jl 35
-julia test_fibonacci.jl 45
-
-echo '-------------------------'
-echo 'Matrix Multiplication'
-echo '-------------------------'
-julia test_matrix_multiplication.jl 15 15 15
-julia test_matrix_multiplication.jl 17 17 17
-julia test_matrix_multiplication.jl 20 20 20
-
-echo '-------------------------'
-echo 'Belief Propagation'
-echo '-------------------------'
-julia test_belief_propagation.jl 25
-julia test_belief_propagation.jl 50
-julia test_belief_propagation.jl 100
-
-echo '-------------------------'
-echo 'Markov Chain'
-echo '-------------------------'
-julia test_markov_chain.jl 5
-julia test_markov_chain.jl 10
-julia test_markov_chain.jl 15
-
-echo '-------------------------'
-echo 'Compute FFT'
-echo '-------------------------'
-julia test_compute_FFT.jl 100
-julia test_compute_FFT.jl 300
-julia test_compute_FFT.jl 500
-
-echo '-------------------------'
-echo 'Jacobi Iterative solver'
-echo '-------------------------'
-julia test_laplace_jacobi_4.jl 10
-julia test_laplace_jacobi_4.jl 15
-julia test_laplace_jacobi_4.jl 20
-
-echo '-------------------------'
-echo 'Compute square root of a matrix'
-echo '-------------------------'
-julia test_sqrt_matrix.jl 10
-julia test_sqrt_matrix.jl 20
-julia test_sqrt_matrix.jl 40
-
-echo '-------------------------'
-echo 'Gauss Legendre quadrature'
-echo '-------------------------'
-julia test_gauss_legendre_quadrature.jl 50
-julia test_gauss_legendre_quadrature.jl 75
-julia test_gauss_legendre_quadrature.jl 100
-
-echo '-------------------------'
-echo 'Evaluation of functions'
-echo '-------------------------'
-julia test_evaluate_functions.jl 80
-julia test_evaluate_functions.jl 90
-julia test_evaluate_functions.jl 100
-
-echo '-------------------------'
-echo 'Compute Munchausen Numbers'
-echo '-------------------------'
-julia test_munchausen.jl
-
-echo '-------------------------'
-echo 'Compute Pernicious Numbers'
-echo '-------------------------'
-julia test_pernicious_numbers.jl 100
-
-julia test_time_series_AOA.jl
-
-#time julia -p 1 test_time_series_AOA_multiprocessing.jl
-#time julia -p 2 test_time_series_AOA_multiprocessing.jl
-#time julia -p 4 test_time_series_AOA_multiprocessing.jl
-#time julia -p 8 test_time_series_AOA_multiprocessing.jl
-#time julia -p 16 test_time_series_AOA_multiprocessing.jl
-#time julia -p 24 test_time_series_AOA_multiprocessing.jl
-#time julia -p 28 test_time_series_AOA_multiprocessing.jl
-
-end=$(date +%s%N)
-echo "Elapsed Time $(($(($end-$start))/1000000)) ms"
-julia writeTime.jl "${start}" "${end}"
-=======
-#!/bin/csh -f
-
-#SBATCH --time=04:00:00
-#SBATCH --job-name=Julia
-#SBATCH --ntasks=40
-#SBATCH --constraint=sky
-#SBATCH -A j1008
-#SBATCH --mail-type=BEGIN
-#SBATCH --mail-type=END
-#SBATCH -o Julia_2021log-%j.out
-
-
-#######################################################################
-#                  System Environment Variables
-#######################################################################
-
-umask 022
-
-#limit stacksize unlimited
-
 #source /usr/share/modules/init/csh
 #module purge
 
@@ -196,7 +43,7 @@ julia -e 'using Pkg; Pkg.add("BenchmarkTools"); Pkg.add("Printf"); Pkg.add("Rand
 #setenv PATH /usr/local/other/julia/1.6.2/bin:$PATH
 #setenv LD_LIBRARY_PATH /usr/local/other/julia/1.6.2/lib:$LD_LIBRARY_PATH
 #setenv JULIA_DEPOT_PATH /discover/nobackup/jkouatch/JULIA_PKGDIR/SLES12/02Aug2021
-
+start=$(date +%s%N)
 echo '-------------------------'
 echo 'Copy Matrix'
 echo '-------------------------'
@@ -292,10 +139,7 @@ echo 'Compute Pernicious Numbers'
 echo '-------------------------'
 julia test_pernicious_numbers.jl 100000
 
-
-
-
-#julia test_time_series_AOA.jl
+julia test_time_series_AOA.jl
 
 #time julia -p 1 test_time_series_AOA_multiprocessing.jl
 #time julia -p 2 test_time_series_AOA_multiprocessing.jl
@@ -304,3 +148,7 @@ julia test_pernicious_numbers.jl 100000
 #time julia -p 16 test_time_series_AOA_multiprocessing.jl
 #time julia -p 24 test_time_series_AOA_multiprocessing.jl
 #time julia -p 28 test_time_series_AOA_multiprocessing.jl
+
+end=$(date +%s%N)
+echo "Elapsed Time $(($(($end-$start))/1000000)) ms"
+julia WriteTime.jl "${start}" "${end}"
