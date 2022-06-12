@@ -59,7 +59,7 @@ julia test_look_and_say.jl 45
 julia test_look_and_say.jl 48
 
 echo '-------------------------'
-echo ‘Count Unique Words in File
+echo 'Count Unique Words in File'
 echo '-------------------------'
 julia test_count_unique_words.jl ../Data/bible.txt
 julia test_count_unique_words.jl ../Data/book1.txt
