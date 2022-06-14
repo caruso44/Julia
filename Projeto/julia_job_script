@@ -18,8 +18,8 @@ umask 022
 
 #limit stacksize unlimited
 
-source /usr/share/modules/init/csh
-module purge
+#source /usr/share/modules/init/csh
+#module purge
 
 ###############
 # 2018 Settings
@@ -35,29 +35,31 @@ module purge
 #setenv LD_LIBRARY_PATH /usr/local/other/julia/1.2/lib:$LD_LIBRARY_PATH
 #setenv JULIA_DEPOT_PATH /gpfsm/dnb32/jkouatch/JULIA_PKGDIR/SLES12/30April2020
 
+julia -e 'using Pkg; Pkg.add("BenchmarkTools"); Pkg.add("Printf"); Pkg.add("Random"); Pkg.add("LinearAlgebra"); Pkg.add("FFTW"); Pkg.add("Statistics"); Pkg.add("LegacyStrings"); Pkg.add("Primes"); Pkg.add("NetCDF"); Pkg.add("DataFrames"); Pkg.add("CSV")'
+
 # SLES12
-module load comp/gcc/11.1.0
-module load julia/1.6.2
+#module load comp/gcc/11.1.0
+#module load julia/1.6.2
 #setenv PATH /usr/local/other/julia/1.6.2/bin:$PATH
 #setenv LD_LIBRARY_PATH /usr/local/other/julia/1.6.2/lib:$LD_LIBRARY_PATH
-setenv JULIA_DEPOT_PATH /discover/nobackup/jkouatch/JULIA_PKGDIR/SLES12/02Aug2021
-
+#setenv JULIA_DEPOT_PATH /discover/nobackup/jkouatch/JULIA_PKGDIR/SLES12/02Aug2021
+start=$(date +%s%N)
 echo '-------------------------'
 echo 'Copy Matrix'
 echo '-------------------------'
-julia test_copy_matrix.jl 50
-julia test_copy_matrix.jl 70
-julia test_copy_matrix.jl 90
-
-#echo '-------------------------'
-#echo 'Look and say'
-#echo '-------------------------'
-#julia test_look_and_say_2.jl 40
-#julia test_look_and_say_2.jl 45
-#julia test_look_and_say_2.jl 48
+julia test_copy_matrix.jl 5000
+julia test_copy_matrix.jl 7000
+julia test_copy_matrix.jl 9000
 
 echo '-------------------------'
-echo ‘Count Unique Words in File
+echo 'Look and say'
+echo '-------------------------'
+julia test_look_and_say.jl 40
+julia test_look_and_say.jl 45
+julia test_look_and_say.jl 48
+
+echo '-------------------------'
+echo 'Count Unique Words in File'
 echo '-------------------------'
 julia test_count_unique_words.jl ../Data/bible.txt
 julia test_count_unique_words.jl ../Data/book1.txt
@@ -74,44 +76,44 @@ julia test_fibonacci.jl 45
 echo '-------------------------'
 echo 'Matrix Multiplication'
 echo '-------------------------'
-julia test_matrix_multiplication.jl 15 15 15
-julia test_matrix_multiplication.jl 17 17 17
-julia test_matrix_multiplication.jl 20 20 20
+julia test_matrix_multiplication.jl 1500 1500 1500
+julia test_matrix_multiplication.jl 1700 1700 1700
+julia test_matrix_multiplication.jl 2000 2000 2000
 
 echo '-------------------------'
 echo 'Belief Propagation'
 echo '-------------------------'
-julia test_belief_propagation.jl 25
-julia test_belief_propagation.jl 50
-julia test_belief_propagation.jl 100
+julia test_belief_propagation.jl 250
+julia test_belief_propagation.jl 500
+julia test_belief_propagation.jl 1000
 
 echo '-------------------------'
 echo 'Markov Chain'
 echo '-------------------------'
-julia test_markov_chain.jl 5
-julia test_markov_chain.jl 10
-julia test_markov_chain.jl 15
+julia test_markov_chain.jl 5000
+julia test_markov_chain.jl 10000
+julia test_markov_chain.jl 15000
 
 echo '-------------------------'
 echo 'Compute FFT'
 echo '-------------------------'
-julia test_compute_FFT.jl 100
-julia test_compute_FFT.jl 150
-julia test_compute_FFT.jl 200
+julia test_compute_FFT.jl 1000
+julia test_compute_FFT.jl 3000
+julia test_compute_FFT.jl 5000
 
 echo '-------------------------'
 echo 'Jacobi Iterative solver'
 echo '-------------------------'
-julia test_laplace_jacobi_4.jl 10
-julia test_laplace_jacobi_4.jl 15
-julia test_laplace_jacobi_4.jl 20
+julia test_laplace_jacobi_4.jl 100
+julia test_laplace_jacobi_4.jl 150
+julia test_laplace_jacobi_4.jl 200
 
 echo '-------------------------'
 echo 'Compute square root of a matrix'
 echo '-------------------------'
-julia test_sqrt_matrix.jl 10
-julia test_sqrt_matrix.jl 20
-julia test_sqrt_matrix.jl 40
+julia test_sqrt_matrix.jl 1000
+julia test_sqrt_matrix.jl 2000
+julia test_sqrt_matrix.jl 4000
 
 echo '-------------------------'
 echo 'Gauss Legendre quadrature'
@@ -123,9 +125,9 @@ julia test_gauss_legendre_quadrature.jl 100
 echo '-------------------------'
 echo 'Evaluation of functions'
 echo '-------------------------'
-julia test_evaluate_functions.jl 80
-julia test_evaluate_functions.jl 90
-julia test_evaluate_functions.jl 100
+julia test_evaluate_functions.jl 80000
+julia test_evaluate_functions.jl 90000
+julia test_evaluate_functions.jl 100000
 
 echo '-------------------------'
 echo 'Compute Munchausen Numbers'
@@ -135,9 +137,9 @@ julia test_munchausen.jl
 echo '-------------------------'
 echo 'Compute Pernicious Numbers'
 echo '-------------------------'
-julia test_pernicious_numbers.jl 100
+julia test_pernicious_numbers.jl 100000
 
-#julia test_time_series_AOA.jl
+julia test_time_series_AOA.jl
 
 #time julia -p 1 test_time_series_AOA_multiprocessing.jl
 #time julia -p 2 test_time_series_AOA_multiprocessing.jl
@@ -146,3 +148,7 @@ julia test_pernicious_numbers.jl 100
 #time julia -p 16 test_time_series_AOA_multiprocessing.jl
 #time julia -p 24 test_time_series_AOA_multiprocessing.jl
 #time julia -p 28 test_time_series_AOA_multiprocessing.jl
+
+end=$(date +%s%N)
+echo "Elapsed Time $(($(($end-$start))/1000000)) ms"
+julia WriteTime.jl "${start}" "${end}"

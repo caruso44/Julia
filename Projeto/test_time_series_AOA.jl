@@ -3,6 +3,9 @@
 using BenchmarkTools
 using NetCDF
 using Printf
+using Statistics
+using DataFrames
+using CSV
 
 """
     calculate_pressure_levels(numlevels)
@@ -52,11 +55,13 @@ function getdata(file)
     startlist = [1, 5, 1, 1]
     countlist = [-1, 1, -1, 1]
 
+
     # Read the daily average age of air
     ageofair = ncread(file, variablename, start=startlist, count=countlist) / coefficient
 
     # Determine the zonal mean
-    zonalmean = mean(ageofair, 1)
+    zonalmean = mean(ageofair, dims=1)
+
     zonalmean = zonalmean[1, 1, :, 1]
 
     return zonalmean
@@ -76,10 +81,10 @@ end
 
 
 # Start time
-@btime begin
+b = @benchmark begin
 
     startyear = 1990
-    endyear = 2009
+    endyear = 1991
     firstfile = 0
     numdays = 0
     datavalue = zeros(72)
@@ -87,7 +92,7 @@ end
 
     # Loop over the years
     for year in startyear:endyear
-        #println( "Processing files for ", year)
+        println( "Processing files for ", year)
         directoryY = reference_directory*"Y"* string(year)*"/"
         fileslist = filter(x -> endswith(x, "_1200z.nc4"),  readdir(directoryY))
         fileslist = [file for file in fileslist]
@@ -96,14 +101,16 @@ end
         # Loop over the daily files
         for f in fileslist
             file = string(directoryY, f)
-            #println( "     --->File: ", file)
+            println( "     --->File: ", file)
             tempvariable = getdata(file)
+
             if firstfile == 0
                 levels = getlevels(file)
             end 
             
             # Stack the daily values into an existing array
             datavalue = hcat(datavalue,tempvariable)
+
         end
     end
 
@@ -111,10 +118,31 @@ end
     datavalue = datavalue[setdiff(1:end, 1),:] # delete the first row
 
 # End time
-end
+end samples = 3 evals = 1 seconds = 100000
 
 #if numDays == 7305
 #   println("Successfully read ", numDays, "files")
 #else
 #   println("Only read ", numDays, "files! Check your script.")
 #end
+
+println(mean(b.times))
+println(minimum(b.times))
+println(maximum(b.times))
+println(std(b.times))
+println(" ")
+
+A = []
+B = []
+C = []
+D = []
+E = []
+
+push!(A,"time_series_AOA")
+push!(B,mean(b.times)/1e9);
+push!(C,minimum(b.times)/1e9);
+push!(D,maximum(b.times)/1e9);
+push!(E,std(b.times)/1e9);
+
+df = DataFrame(function_name = A, avg_time = B, min_time = C, max_time = D, std_dev = E)
+CSV.write("results-host-julia.csv", df, delim = ',', append = true)

@@ -7,9 +7,13 @@ Sections of the code below were proposed by Simon Danisch:
 using BenchmarkTools
 using Printf
 using LinearAlgebra
+using Statistics
+using DataFrames
+using CSV
 
 """
     regular_time_step(u::Matrix)
+
 Take a time step in the Jacobi numerical approximation u using un-optimized loops.
 """
 function regular_time_step(u::Matrix)
@@ -32,51 +36,54 @@ end
 
 """
     optimized_time_step{T}(u::Matrix{T})
+
 Take a time step in the Jacobi numerical approximation u using optimized loops.
 """
 #function optimized_time_step{T}(u::Matrix{T}) 
-function optimized_time_step(u::Matrix{T})  where {T}
-    n, m = size(u)
-    error = T(0.0) # not an optimization, but makes it work for all element types
-    @inbounds for i = 2:n-1
-        for j = 2:m-1
-            temp = u[j, i];
-            u[j, i] = ( T(4) *(u[j-1, i] + u[j+1, i] +
-                        u[j, i-1] + u[j, i+1]) +
-                        u[j-1, i-1] + u[j+1, i+1] +
-                        u[j+1, i-1] + u[j-1, i+1]) / T(20)
-            difference = u[j, i] - temp
-            error += difference*difference;
-        end
-    end
-    return sqrt(error)
-end
+# function optimized_time_step(u::Matrix{T})  where {T}
+#     n, m = size(u)
+#     error = T(0.0) # not an optimization, but makes it work for all element types
+#     @inbounds for i = 2:n-1
+#         for j = 2:m-1
+#             temp = u[j, i];
+#             u[j, i] = ( T(4) *(u[j-1, i] + u[j+1, i] +
+#                         u[j, i-1] + u[j, i+1]) +
+#                         u[j-1, i-1] + u[j+1, i+1] +
+#                         u[j+1, i-1] + u[j-1, i+1]) / T(20)
+#             difference = u[j, i] - temp
+#             error += difference*difference;
+#         end
+#     end
+#     return sqrt(error)
+# end
 
 """
     optimized_time_step_simd{T}(u::Matrix{T})
+
 Take a time step in the Jacobi numerical approximation u using optimized loops and SIMD.
 """
 #function optimized_time_step_simd{T}(u::Matrix{T})
-function optimized_time_step_simd(u::Matrix{T}) where {T}
-    n, m = size(u)
-    error = T(0.0) # not an optimization, but makes it work for all element types
-    @inbounds for i = 2:n-1
-        @simd for j = 2:m-1
-            temp = u[j, i];
-            u[j, i] = (T(4)*(u[j-1, i] + u[j+1, i] +
-                        u[j, i-1] + u[j, i+1]) +
-                        u[j-1, i-1] + u[j+1, i+1] +
-                        u[j+1, i-1] + u[j-1, i+1])/T(20)
-            difference = u[j, i] - temp
-            error += difference*difference;
-        end
-    end
-    return sqrt(error)
-end
+# function optimized_time_step_simd(u::Matrix{T}) where {T}
+#     n, m = size(u)
+#     error = T(0.0) # not an optimization, but makes it work for all element types
+#     @inbounds for i = 2:n-1
+#         @simd for j = 2:m-1
+#             temp = u[j, i];
+#             u[j, i] = (T(4)*(u[j-1, i] + u[j+1, i] +
+#                         u[j, i-1] + u[j, i+1]) +
+#                         u[j-1, i-1] + u[j+1, i+1] +
+#                         u[j+1, i-1] + u[j-1, i+1])/T(20)
+#             difference = u[j, i] - temp
+#             error += difference*difference;
+#         end
+#     end
+#     return sqrt(error)
+# end
 
 
 """
     optimized_vectorized_time_step(u::Matrix)
+
 Take a time step in the Jacobi numerical approximation u using optimized vectorization.
 """
 function optimized_vectorized_time_step(u::Matrix)
@@ -92,48 +99,50 @@ function optimized_vectorized_time_step(u::Matrix)
 end
 
 
-# C version
-const clib_name5 = tempname()
-source = """
-#include <math.h>
-double c_time_step(int N, double *u[])
-{
-    double temp, difference;
-    int i, j;
-    double error;
-    error = 0.0;
-    for (i = 1; i < N-1; i++) {
-        for (j = 1; j < N-1; j++) {
-            temp = u[j][i];
-            u[j][i] = ( 4.0 *(u[j-1][i] + u[j+1][i] +
-                        u[j][i-1] + u[j][i+1]) +
-                        u[j-1][i-1] + u[j+1][i+1] +
-                        u[j+1][i-1] + u[j-1][i+1])/20.;
-            difference = u[j][i] - temp;
-            error += difference*difference;
-        }
-    }
-    return sqrt(error);
-}
-"""
-run(`gcc --version`)
-# gcc (Ubuntu 5.4.1-2ubuntu1~16.04) 5.4.1 20160904
-open(`gcc -fPIC -Ofast -O3 -xc -shared -o $(clib_name5).so -`, "w") do pipe
-    print(pipe, source)
-end
+# # C version
+# const clib_name5 = tempname()
+# source = """
+# #include <math.h>
+# double c_time_step(int N, double *u[])
+# {
+#     double temp, difference;
+#     int i, j;
+#     double error;
+#     error = 0.0;
+#     for (i = 1; i < N-1; i++) {
+#         for (j = 1; j < N-1; j++) {
+#             temp = u[j][i];
+#             u[j][i] = ( 4.0 *(u[j-1][i] + u[j+1][i] +
+#                         u[j][i-1] + u[j][i+1]) +
+#                         u[j-1][i-1] + u[j+1][i+1] +
+#                         u[j+1][i-1] + u[j-1][i+1])/20.;
+#             difference = u[j][i] - temp;
+#             error += difference*difference;
+#         }
+#     }
+#     return sqrt(error);
+# }
+# """
+# run(`gcc --version`)
+# # gcc (Ubuntu 5.4.1-2ubuntu1~16.04) 5.4.1 20160904
+# open(`gcc -fPIC -Ofast -O3 -xc -shared -o $(clib_name5).so -`, "w") do pipe
+#     print(pipe, source)
+# end
 
 
 """
     c_time_step(X::Vector{Vector{Float64}})
+
 Take a time step in the Jacobi numerical approximation u for the C version.
 """
-function c_time_step(X::Vector{Vector{Float64}})
-    ccall(("c_time_step", clib_name5), Float64, (Cint, Ptr{Ptr{Float64}}), length(X), X)
-end
+# function c_time_step(X::Vector{Vector{Float64}})
+#     ccall(("c_time_step", clib_name5), Float64, (Cint, Ptr{Ptr{Float64}}), length(X), X)
+# end
 
 
 """
     solver(u, time_step)
+
 Find the numerical approximation u by iterating the time steps.
 """
 function solver(u, time_step)
@@ -165,6 +174,7 @@ println("-------------------------------")
 
 """
     initialize_array(numPoints = num_points)
+
 Create and populate a square array with side length num_points.
 """
 #function initialize_array(numPoints = 100)
@@ -178,27 +188,72 @@ function initialize_array(numPoints = num_points)
 end
 
 
-initialize_c() = (v = initialize_array(); v_2 = [v[i, :] for i=1:size(v, 1)])
+# initialize_c() = (v = initialize_array(); v_2 = [v[i, :] for i=1:size(v, 1)])
 
-functions = (regular_time_step, optimized_time_step, optimized_vectorized_time_step, optimized_time_step_simd) #
-benchmarks = map(functions) do time_step
-    v = initialize_array()
-    solver(v, time_step) # compile
-    v = initialize_array()
-    # should be enough iterations already to be okay with just a simple elapsed
-    result = @elapsed begin
-        u, error, iteration = solver(v, time_step)
-    end
-    Symbol(time_step) => (result, iteration)
-end
+# functions = (regular_time_step, optimized_time_step, optimized_vectorized_time_step, optimized_time_step_simd) #
+# functions = (regular_time_step, optimized_vectorized_time_step) #
+# benchmarks = map(functions) do time_step
+#     v = initialize_array()
+#     solver(v, time_step) # compile
+#     v = initialize_array()
+#     # should be enough iterations already to be okay with just a simple elapsed
+#     result = @elapsed begin
+#         u, error, iteration = solver(v, time_step)
+#     end
+#     Symbol(time_step) => (result, iteration)
+# end
 
-result = @elapsed begin
-    v = initialize_c()
-    u, error, iteration = solver(v, c_time_step)
-end
-benchmarks = (benchmarks..., :c_time_step => (result, iteration))
-for (name, (t, sweeps)) in benchmarks
-    println(name, ":")
-    println("          Number of sweeps: ", sweeps)
-    println("              Elapsed Time: $(t) Seconds")
-end
+b = @benchmark begin
+    v = initialize_array(num_points)
+    u, error, iteration = solver(v,regular_time_step)
+end samples = 3 evals = 1 seconds = 100000
+
+println(mean(b.times)/1e9)
+println(minimum(b.times)/1e9)
+println(maximum(b.times)/1e9)
+println(std(b.times)/1e9)
+println(" ")
+
+A = []
+B = []
+C = []
+D = []
+E = []
+
+push!(A,"laplace_jacobi_loop_solver_" * string(num_points))
+push!(B,mean(b.times)/1e9);
+push!(C,minimum(b.times)/1e9);
+push!(D,maximum(b.times)/1e9);
+push!(E,std(b.times)/1e9);
+
+b = @benchmark begin
+    v = initialize_array(num_points)
+    u, error, iteration = solver(v,optimized_vectorized_time_step)
+end samples = 3 evals = 1 seconds = 100000
+
+println(mean(b.times)/1e9)
+println(minimum(b.times)/1e9)
+println(maximum(b.times)/1e9)
+println(std(b.times)/1e9)
+println(" ")
+
+
+push!(A,"laplace_jacobi_vectorized_solver_" * string(num_points))
+push!(B,mean(b.times)/1e9);
+push!(C,minimum(b.times)/1e9);
+push!(D,maximum(b.times)/1e9);
+push!(E,std(b.times)/1e9);
+
+df = DataFrame(function_name = A, avg_time = B, min_time = C, max_time = D, std_dev = E)
+CSV.write("results-host-julia.csv", df, delim = ',', append = true)
+
+# result = @elapsed begin
+#     v = initialize_c()
+#     u, error, iteration = solver(v, c_time_step)
+# end
+# benchmarks = (benchmarks..., :c_time_step => (result, iteration))
+# for (name, (t, sweeps)) in benchmarks
+#     println(name, ":")
+#     println("          Number of sweeps: ", sweeps)
+#     println("              Elapsed Time: $(t) Seconds")
+# end

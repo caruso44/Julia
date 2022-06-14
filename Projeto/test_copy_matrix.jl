@@ -1,7 +1,8 @@
 using Statistics
 using BenchmarkTools
 using Printf
-
+using DataFrames
+using CSV
 
 # Get the dimension from the command line.
 n, = size(ARGS)
@@ -33,7 +34,7 @@ println("-------------------------------")
 
 A = randn(dimension, dimension, 3)
 
-b = @benchmark matrixcopy(A) samples = 3 evals = 1 seconds = 10000
+b = @benchmark matrixcopy(A) samples = 3 evals = 1 seconds = 100000
 
 println(mean(b.times))
 println(minimum(b.times))
@@ -41,9 +42,23 @@ println(maximum(b.times))
 println(std(b.times))
 println(" ")
 
+X = []
+B = []
+C = []
+D = []
+E = []
+
+push!(X,"serial_copy_" * string(dimension))
+push!(B,mean(b.times)/1e9);
+push!(C,minimum(b.times)/1e9);
+push!(D,maximum(b.times)/1e9);
+push!(E,std(b.times)/1e9);
+
+
 println("--------------------------")
 println(@sprintf "Vectorized Copy of matrix %d" dimension)
 println("--------------------------")
+
 
 A = randn(dimension, dimension, 3)
 
@@ -51,5 +66,14 @@ b = @benchmark begin
     A[:, :, 1] = A[:, :, 2]
     A[:, :, 3] = A[:, :, 1]
     A[:, :, 2] = A[:, :, 3]
-end samples = 3 evals = 1 seconds = 10000
+end samples = 3 evals = 1 seconds = 100000
 
+
+push!(X,"vector_copy_" * string(dimension))
+push!(B,mean(b.times)/1e9);
+push!(C,minimum(b.times)/1e9);
+push!(D,maximum(b.times)/1e9);
+push!(E,std(b.times)/1e9);
+
+df = DataFrame(function_name = X, avg_time = B, min_time = C, max_time = D, std_dev = E)
+CSV.write("results-host-julia.csv", df, delim = ',', append = true)
